@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Test Moneylover</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<style>
+    /* Full-width inputs */
+
+    #display {
+        margin: 0 auto;
+        margin-left: 30px;
+    }
+
+    span.glyphicon.glyphicon-remove {
+        width: 25px;
+        border: 1px solid;
+        padding-left: 5px;
+    }
+</style>
+
+<body>
+    <h1>List students</h1>
+    <div>
+        <button type="button" class="btn btn-info" id="get-all">Hiển thị danh sách sinh viên</button>
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#add-student">Nhập sinh viên</button>
+    </div>
+    <br>
+    <div id="display">
+        <table style="width:50%">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Class</th>
+                    <th>Age</th>
+                    <th>Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="output">
+            </tbody>
+        </table>
+    </div>
+
+</body>
+<!-- modal add student -->
+<div id="add-student" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Điền vào form</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>
+                        <b>Tên sinh viên</b>
+                    </label>
+                    <input type="text" class="form-control" placeholder="Tên sinh viên" id="username">
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <b>Tuổi</b>
+                    </label>
+                    <input type="text" placeholder="Tuổi" class="form-control" id="date_of_birth" required>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <b>Lớp</b>
+                    </label>
+                    <input type="text" class="form-control" placeholder="Lớp" id="class_name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <b>Ngày khởi tạo</b>
+                    </label>
+                    <input type="text" class="form-control" placeholder="Ngày khởi tạo" id="time_create" required>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="add">Thêm</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- modal edit student -->
+<div id="edit-student" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Điền vào form</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>
+                        <b>Tên sinh viên</b>
+                    </label>
+                    <input type="text" class="form-control" placeholder="Tên sinh viên" id="username_edit">
+                </div>
+            
+                <div class="form-group">
+                    <label>
+                        <b>Tuổi</b>
+                    </label>
+                    <input type="text" placeholder="Tuổi" class="form-control" id="date_of_birth_edit" required>
+                </div>
+            
+                <div class="form-group">
+                    <label>
+                        <b>Lớp</b>
+                    </label>
+                    <input type="text" class="form-control" placeholder="Lớp" id="class_name_edit" required>
+                </div>
+            
+                <div class="form-group">
+                    <label>
+                        <b>Ngày khởi tạo</b>
+                    </label>
+                    <input type="text" class="form-control" placeholder="Ngày khởi tạo" id="time_create_edit" required>
+                </div>
+            
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="edit">Chỉnh sửa</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script>
+    // get all student
+    $('#get-all').click(() => {
+        $('#output').empty()
+        axios({
+            method: 'get',
+            url: '/student'
+        })
+            .then(res => {
+                let students = res.data
+                for (student in students) {
+                    $('#output')
+                        .append(`<tr>
+                        <td>${+student + 1}</td>
+                        <td>${students[student].username}</td>
+                        <td>${students[student].class_name}</td>
+                        <td>${students[student].date_of_birth}</td>
+                        <td>${students[student].time_create}</td>
+                         <td>
+                            <button class="delete ${students[student].id}">Xóa</button>
+                            <button class="edit ${students[student].id}" data-toggle="modal" data-target="#edit-student">Sửa</button>
+                        </td></tr>
+                        `)
+
+                }
+            })
+    })
+
+    // add student 
+    $('#add').click(() => {
+        axios({
+            method: 'post',
+            url: '/student',
+            data: {
+                username: $('#username').val(),
+                date_of_birth: $('#date_of_birth').val(),
+                class_name: $('#class_name').val(),
+                time_create: $('#time_create').val()
+            }
+        })
+            .then(res => {
+                $('#output').empty()
+                let students = res.data
+                for (student in students) {
+                    $('#output')
+                        .append(`<tr>
+                        <td>${+student + 1}</td>
+                        <td>${students[student].username}</td>
+                        <td>${students[student].class_name}</td>
+                        <td>${students[student].date_of_birth}</td>
+                        <td>${students[student].time_create}</td>
+                        <td>
+                            <button class="delete ${students[student].id}">Xóa</button>
+                            <button class="edit ${students[student].id}" data-toggle="modal" data-target="#edit-student">Sửa</button>
+                        </td></tr>
+                        `)
+
+                }
+            })
+    })
+    // edit info student
+    $(document).on('click', '.edit', function () {
+        $(this).click(() => {
+            $('#edit').click(() => {
+                let id = $(this).attr('class').split(' ').pop()
+                let username = $('#username_edit').val()
+                let date_of_birth = $('#date_of_birth_edit').val()
+                let class_name = $('#class_name_edit').val()
+                let time_create = $('#time_create_edit').val()
+                axios({
+                    method: 'put',
+                    url: `/student/?username=${username}&date_of_birth=${date_of_birth}&class_name=${class_name}&time_create=${time_create}&id=${id}`,
+                })
+                    .then(res => {
+                        $('#output').empty()
+                        let students = res.data
+                        for (student in students) {
+                            $('#output')
+                                .append(`<tr>
+                        <td>${+student + 1}</td>
+                        <td>${students[student].username}</td>
+                        <td>${students[student].class_name}</td>
+                        <td>${students[student].date_of_birth}</td>
+                        <td>${students[student].time_create}</td>
+                        <td>
+                            <button class="delete ${students[student].id}">Xóa</button>
+                            <button class="edit ${students[student].id}" data-toggle="modal" data-target="#edit-student">Sửa</button>
+                        </td></tr>
+                        `)
+
+                        }
+                    })
+            })
+
+        })
+    })
+
+
+    // delete info student
+    $(document).on('click', '.delete', function () {
+        $(this).click(() => {
+            let id = $(this).attr('class').split(' ').pop()
+            axios({
+                method: 'delete',
+                url: `/student/?id=${id}`
+            })
+                .then(res => {
+                    $('#output').empty()
+                    let students = res.data
+                    for (student in students) {
+                        $('#output')
+                            .append(`<tr>
+                        <td>${+student + 1}</td>
+                        <td>${students[student].username}</td>
+                        <td>${students[student].class_name}</td>
+                        <td>${students[student].date_of_birth}</td>
+                        <td>${students[student].time_create}</td>
+                        <td>
+                            <button class="delete ${students[student].id}">Xóa</button>
+                            <button class="edit ${students[student].id}" data-toggle="modal" data-target="#edit-student">Sửa</button>
+                        </td></tr>
+                        `)
+
+                    }
+                })
+        })
+    })
+
+</script>
+
+</html>

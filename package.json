@@ -1,0 +1,20 @@
+{
+  "name": "moneylover",
+  "version": "1.0.0",
+  "description": "the test",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -S"
+  },
+  "keywords": [
+    "nodejs"
+  ],
+  "author": "Pham Bao Nam",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "nunjucks": "^3.0.1",
+    "pg-promise": "^7.3.2"
+  }
+}
